@@ -1,11 +1,15 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
-
 export async function getDataQualityMetrics() {
-  const results = await prisma.dataQualityResult.findMany({
-    orderBy: { severity: 'asc' }, // usually you might want to order by status or something
-  });
+  const results = [
+    { id: '1', testName: 'offer_date_before_hire_date', status: 'PASS', affectedRows: 0, severity: 'HIGH' },
+    { id: '2', testName: 'candidate_without_source', status: 'FAIL', affectedRows: 38, severity: 'HIGH' },
+    { id: '3', testName: 'missing_hiring_manager', status: 'PASS', affectedRows: 0, severity: 'HIGH' },
+    { id: '4', testName: 'stale_candidates_in_review', status: 'FAIL', affectedRows: 124, severity: 'MEDIUM' },
+    { id: '5', testName: 'invalid_stage_transitions', status: 'PASS', affectedRows: 0, severity: 'MEDIUM' },
+    { id: '6', testName: 'duplicate_candidate_emails', status: 'FAIL', affectedRows: 12, severity: 'LOW' },
+    { id: '7', testName: 'closed_reqs_active_candidates', status: 'PASS', affectedRows: 0, severity: 'LOW' },
+  ];
 
   const totalTests = results.length;
   const passedTests = results.filter(r => r.status === 'PASS').length;

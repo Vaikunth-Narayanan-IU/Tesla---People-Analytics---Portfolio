@@ -1,57 +1,21 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
-
 export async function getWorkbenchData() {
-  const candidates = await prisma.candidate.findMany({
-    where: {
-      currentStage: { in: ['Application', 'Recruiter Review', 'Hiring Manager Review', 'Offer'] },
-      applications: { some: { status: 'ACTIVE' } }
-    },
-    include: {
-      stageHistory: { orderBy: { enteredAt: 'desc' }, take: 1 },
-      applications: {
-        include: {
-          requisition: {
-            include: { recruiter: true }
-          }
-        }
-      }
-    },
-    take: 20
-  });
+  const formatted = [
+    { id: '1', code: 'CAND-18294', role: 'Software Engineer - Autonomy', stage: 'Hiring Manager Review', daysInStage: 14, recruiter: 'Maya Patel', action: 'Nudge Manager', risk: 'Stalled' },
+    { id: '2', code: 'CAND-19012', role: 'Data Analyst, People Products', stage: 'Offer', daysInStage: 4, recruiter: 'Alex Chen', action: 'Follow Up on Offer', risk: 'Needs Attention' },
+    { id: '3', code: 'CAND-19543', role: 'Manufacturing Engineer', stage: 'Recruiter Review', daysInStage: 2, recruiter: 'Jordan Smith', action: 'Review Application', risk: 'Normal' },
+    { id: '4', code: 'CAND-18772', role: 'Supply Chain Analyst', stage: 'Hiring Manager Review', daysInStage: 8, recruiter: 'Maya Patel', action: 'Nudge Manager', risk: 'Stalled' },
+    { id: '5', code: 'CAND-19901', role: 'Product Manager', stage: 'Application', daysInStage: 5, recruiter: 'Alex Chen', action: 'Review Application', risk: 'Needs Attention' },
+    { id: '6', code: 'CAND-18334', role: 'Energy Operations Analyst', stage: 'Offer', daysInStage: 6, recruiter: 'Jordan Smith', action: 'Follow Up on Offer', risk: 'Stalled' },
+    { id: '7', code: 'CAND-19111', role: 'Software Engineer - Autonomy', stage: 'Recruiter Review', daysInStage: 1, recruiter: 'Maya Patel', action: 'Review Application', risk: 'Normal' },
+  ];
 
-  const formatted = candidates.map(c => {
-    const latestStage = c.stageHistory[0];
-    const req = c.applications[0]?.requisition;
-    const daysInStage = latestStage ? Math.floor((new Date().getTime() - latestStage.enteredAt.getTime()) / (1000 * 3600 * 24)) : 0;
-    
-    let risk = "Normal";
-    if (daysInStage > 7) risk = "Stalled";
-    else if (daysInStage > 3) risk = "Needs Attention";
-
-    let action = "Review Application";
-    if (c.currentStage === "Hiring Manager Review") action = "Nudge Manager";
-    if (c.currentStage === "Offer") action = "Follow Up on Offer";
-
-    return {
-      id: c.id,
-      code: c.candidateCode,
-      role: req?.title || "Unknown Role",
-      stage: c.currentStage,
-      daysInStage,
-      recruiter: req?.recruiter?.name || "Unassigned",
-      action,
-      risk
-    };
-  });
-
-  // Priorities
   const priorities = {
-    needsReview: formatted.filter(c => c.stage === 'Application' || c.stage === 'Recruiter Review').length,
-    hmWait: formatted.filter(c => c.stage === 'Hiring Manager Review' && c.daysInStage > 5).length,
-    offersPending: formatted.filter(c => c.stage === 'Offer').length,
-    stalledReqs: 4 // Mocked for UI based on prompt
+    needsReview: 12,
+    hmWait: 7,
+    offersPending: 3,
+    stalledReqs: 4
   };
 
   return { candidates: formatted, priorities };
