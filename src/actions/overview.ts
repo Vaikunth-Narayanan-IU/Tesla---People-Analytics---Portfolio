@@ -22,7 +22,7 @@ export async function getOverviewKPIs() {
   }
 
   // Offer Acceptance Rate
-  const offers = await prisma.offer.findMany({ select: { status: true } });
+  const offers = await prisma.offer.findMany({ select: { status: true, candidateId: true } });
   const acceptedOffers = offers.filter(o => o.status === "ACCEPTED").length;
   const offerAcceptanceRate = offers.length > 0 ? Math.round((acceptedOffers / offers.length) * 100) : 0;
 
