@@ -1,12 +1,12 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar, CartesianGrid } from "recharts";
-import { Activity, AlertTriangle, CheckCircle, Clock } from "lucide-react";
+import { BarChart, Bar, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { AlertTriangle, CheckCircle, Clock } from "lucide-react";
 
 export default function OverviewDashboard({ kpis, funnel, health }: any) {
-  const container = {
+  const container: Variants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
@@ -14,7 +14,7 @@ export default function OverviewDashboard({ kpis, funnel, health }: any) {
     }
   };
 
-  const item = {
+  const item: Variants = {
     hidden: { opacity: 0, y: 20 },
     show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
   };
