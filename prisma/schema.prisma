@@ -1,0 +1,168 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Department {
+  id              String          @id @default(uuid())
+  name            String
+  requisitions    Requisition[]
+  hiringManagers  HiringManager[]
+  interviewers    Interviewer[]
+}
+
+model Location {
+  id           String        @id @default(uuid())
+  city         String
+  state        String
+  country      String
+  requisitions Requisition[]
+}
+
+model Recruiter {
+  id           String        @id @default(uuid())
+  name         String
+  team         String
+  email        String
+  requisitions Requisition[]
+}
+
+model HiringManager {
+  id           String        @id @default(uuid())
+  name         String
+  departmentId String
+  department   Department    @relation(fields: [departmentId], references: [id])
+  requisitions Requisition[]
+}
+
+model Interviewer {
+  id           String        @id @default(uuid())
+  name         String
+  departmentId String
+  department   Department    @relation(fields: [departmentId], references: [id])
+  interviews   Interview[]
+}
+
+model Source {
+  id             String      @id @default(uuid())
+  sourceName     String
+  estimatedCost  Float?
+  candidates     Candidate[]
+}
+
+model Requisition {
+  id              String    @id @default(uuid())
+  reqCode         String    @unique
+  title           String
+  departmentId    String
+  locationId      String
+  recruiterId     String
+  hiringManagerId String
+  openedAt        DateTime
+  closedAt        DateTime?
+  targetHires     Int
+  status          String // e.g., "OPEN", "CLOSED", "DRAFT"
+
+  department      Department    @relation(fields: [departmentId], references: [id])
+  location        Location      @relation(fields: [locationId], references: [id])
+  recruiter       Recruiter     @relation(fields: [recruiterId], references: [id])
+  hiringManager   HiringManager @relation(fields: [hiringManagerId], references: [id])
+  applications    Application[]
+}
+
+model Candidate {
+  id              String      @id @default(uuid())
+  candidateCode   String      @unique
+  createdAt       DateTime    @default(now())
+  sourceId        String
+  currentStage    String
+  location        String
+  yearsExperience Int
+
+  source          Source      @relation(fields: [sourceId], references: [id])
+  applications    Application[]
+  stageHistory    CandidateStageHistory[]
+  interviews      Interview[]
+  offers          Offer[]
+  hires           Hire[]
+}
+
+model Application {
+  id              String      @id @default(uuid())
+  candidateId     String
+  requisitionId   String
+  applicationDate DateTime
+  status          String // e.g., "ACTIVE", "REJECTED", "WITHDRAWN", "HIRED"
+
+  candidate       Candidate   @relation(fields: [candidateId], references: [id])
+  requisition     Requisition @relation(fields: [requisitionId], references: [id])
+}
+
+model RecruitingStage {
+  id           String                  @id @default(uuid())
+  stageName    String
+  stageOrder   Int
+  history      CandidateStageHistory[]
+}
+
+model CandidateStageHistory {
+  id              String      @id @default(uuid())
+  candidateId     String
+  requisitionId   String
+  stageId         String
+  enteredAt       DateTime
+  exitedAt        DateTime?
+  outcome         String? // e.g., "MOVED_FORWARD", "REJECTED", "WITHDRAWN"
+
+  candidate       Candidate       @relation(fields: [candidateId], references: [id])
+  stage           RecruitingStage @relation(fields: [stageId], references: [id])
+}
+
+model Interview {
+  id              String      @id @default(uuid())
+  candidateId     String
+  requisitionId   String
+  interviewType   String // e.g., "TECHNICAL", "BEHAVIORAL", "ONSITE"
+  scheduledAt     DateTime
+  completedAt     DateTime?
+  result          String? // e.g., "PASS", "FAIL", "PENDING", "CANCELLED"
+  interviewerId   String
+
+  candidate       Candidate   @relation(fields: [candidateId], references: [id])
+  interviewer     Interviewer @relation(fields: [interviewerId], references: [id])
+}
+
+model Offer {
+  id              String      @id @default(uuid())
+  candidateId     String
+  requisitionId   String
+  offerDate       DateTime
+  responseDate    DateTime?
+  status          String // e.g., "EXTENDED", "ACCEPTED", "DECLINED"
+  declineReason   String?
+
+  candidate       Candidate   @relation(fields: [candidateId], references: [id])
+}
+
+model Hire {
+  id              String      @id @default(uuid())
+  candidateId     String
+  requisitionId   String
+  hireDate        DateTime
+  startDate       DateTime?
+
+  candidate       Candidate   @relation(fields: [candidateId], references: [id])
+}
+
+model DataQualityResult {
+  id              String   @id @default(uuid())
+  testName        String
+  runTimestamp    DateTime @default(now())
+  status          String // e.g., "PASS", "FAIL"
+  affectedRows    Int
+  severity        String // e.g., "HIGH", "MEDIUM", "LOW"
+}

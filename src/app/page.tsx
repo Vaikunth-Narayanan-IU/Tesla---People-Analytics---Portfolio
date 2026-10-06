@@ -1,101 +1,110 @@
-import Image from "next/image";
+"use client";
+
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { ArrowRight, Activity, Users, Database } from "lucide-react";
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="flex min-h-[calc(100vh-3.5rem)] flex-col items-center justify-center p-6 relative overflow-hidden">
+      {/* Background Pipeline Animation */}
+      <div className="absolute inset-0 z-0 opacity-20 pointer-events-none flex flex-col justify-center items-center">
+        <div className="flex items-center gap-8 text-muted/30 font-bold text-4xl sm:text-6xl tracking-widest whitespace-nowrap overflow-hidden w-full max-w-[1200px] px-8">
+          {["SOURCE", "SCREEN", "INTERVIEW", "OFFER", "HIRE"].map((stage, i) => (
+            <div key={stage} className="flex items-center gap-8">
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: i * 0.2, duration: 0.8 }}
+              >
+                {stage}
+              </motion.div>
+              {i < 4 && (
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: "4rem" }}
+                  transition={{ delay: i * 0.2 + 0.4, duration: 0.5 }}
+                  className="h-1 bg-gradient-to-r from-transparent via-teslaRed to-transparent relative"
+                >
+                   <motion.div 
+                     className="absolute top-1/2 -translate-y-1/2 left-0 w-2 h-2 rounded-full bg-white shadow-[0_0_10px_rgba(255,255,255,0.8)]"
+                     animate={{ left: ["0%", "100%"] }}
+                     transition={{ repeat: Infinity, duration: 2, ease: "linear", delay: i * 0.5 }}
+                   />
+                </motion.div>
+              )}
+            </div>
+          ))}
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+      </div>
+
+      <div className="z-10 flex flex-col items-center text-center max-w-3xl">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="inline-flex items-center gap-2 rounded-full border border-panelBorder bg-panel/50 px-3 py-1 text-xs font-medium text-muted mb-8"
         >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+          <Database className="h-3.5 w-3.5" />
+          Powered by PostgreSQL & Prisma
+        </motion.div>
+
+        <motion.h1
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="text-5xl sm:text-7xl font-bold tracking-tight mb-6"
         >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+          PEOPLE DECISIONS
+          <br />
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-muted">
+            BUILT ON BETTER DATA
+          </span>
+        </motion.h1>
+
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="text-lg text-muted mb-12 max-w-2xl leading-relaxed"
         >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          An interactive recruiting analytics platform exploring how pipeline data, 
+          data quality, and operational metrics can help recruiting teams make better decisions.
+        </motion.p>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="flex flex-col sm:flex-row gap-4"
+        >
+          <Link
+            href="/overview"
+            className="inline-flex items-center justify-center gap-2 rounded-md bg-teslaRed px-8 py-3 text-sm font-semibold text-white transition-all hover:bg-teslaRedDark hover:shadow-[0_0_15px_rgba(224,31,38,0.4)]"
+          >
+            <Activity className="h-4 w-4" />
+            EXPLORE RECRUITING DATA
+          </Link>
+          <Link
+            href="/workbench"
+            className="inline-flex items-center justify-center gap-2 rounded-md border border-panelBorder bg-panel px-8 py-3 text-sm font-semibold transition-all hover:bg-panelBorder hover:text-white"
+          >
+            <Users className="h-4 w-4" />
+            VIEW ANALYTICS WORKBENCH
+          </Link>
+        </motion.div>
+      </div>
+
+      {/* Portfolio Badge */}
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1, duration: 1 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 text-xs text-muted/50 flex flex-col items-center gap-1"
+      >
+        <span>Portfolio Prototype</span>
+        <span>Srivaikunthan Narayanan</span>
+      </motion.div>
     </div>
   );
 }
